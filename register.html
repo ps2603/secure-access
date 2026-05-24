@@ -202,7 +202,7 @@ input::placeholder { color:var(--muted); font-weight:400; font-size:15px; }
 
 <script>
 // ⚠️ REPLACE THIS WITH YOUR APPS SCRIPT WEB APP URL
-const BACKEND_URL = "https://ps2603.github.io/secure-access/";
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxBxXVNsElY94Ggf2bRFswVUQZbMIg_juM2vzda2tYtd9cbG2UbfWNLbd23MJr1U1KC7A/exec";
 
 let uid = '', uname = '';
 
@@ -217,7 +217,7 @@ function setStep(n) {
 }
 
 function toPhase2() {
-  if (!BACKEND_URL || BACKEND_URL === 'https://ps2603.github.io/secure-access/') {
+  if (!BACKEND_URL || BACKEND_URL === 'https://script.google.com/macros/s/AKfycbxBxXVNsElY94Ggf2bRFswVUQZbMIg_juM2vzda2tYtd9cbG2UbfWNLbd23MJr1U1KC7A/exec') {
     showStatus('⚠️ BACKEND_URL not set — open register.html and paste your Apps Script URL', 'error'); return;
   }
   uid = document.getElementById('userId').value.trim();
