@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureAccess — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07070f;
+  --surface: #0e0e1c;
+  --border: #1c1c35;
+  --accent: #6c63ff;
+  --accent2: #ff6584;
+  --text: #e8e8f0;
+  --muted: #5a5a7a;
+  --success: #00d48a;
+  --error: #ff4d6d;
+  --glow: rgba(108,99,255,0.25);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; }
+body {
+  min-height:100vh;
+  background:var(--bg);
+  font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  position:relative;
+}
+.bg-grid {
+  position:fixed; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(108,99,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108,99,255,0.05) 1px, transparent 1px);
+  background-size:44px 44px;
+  animation:gridDrift 25s linear infinite;
+}
+@keyframes gridDrift { to { transform:translateY(44px); } }
+.orb {
+  position:fixed; border-radius:50%; filter:blur(90px); pointer-events:none; will-change:transform;
+}
+.orb-a { width:400px; height:400px; background:radial-gradient(circle, rgba(108,99,255,0.18), transparent 70%); top:-140px; left:-140px; animation:orbFloat 8s ease-in-out infinite; }
+.orb-b { width:320px; height:320px; background:radial-gradient(circle, rgba(255,101,132,0.12), transparent 70%); bottom:-100px; right:-100px; animation:orbFloat 10s ease-in-out infinite reverse; }
+@keyframes orbFloat { 0%,100%{transform:translate(0,0);} 50%{transform:translate(20px,20px);} }
+
+.wrap {
+  position:relative; z-index:10;
+  width:100%; max-width:400px;
+  padding:16px;
+  animation:wrapIn 0.7s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes wrapIn { from{opacity:0;transform:translateY(32px) scale(0.96);} to{opacity:1;transform:none;} }
+
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:44px 36px;
+  box-shadow:0 0 80px rgba(108,99,255,0.07), 0 32px 64px rgba(0,0,0,0.6);
+}
+
+.brand { display:flex; align-items:center; gap:12px; margin-bottom:40px; }
+.brand-icon {
+  width:44px; height:44px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+  box-shadow:0 4px 20px rgba(108,99,255,0.35);
+}
+.brand-name { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; letter-spacing:-0.3px; }
+
+h1 { font-family:'Syne',sans-serif; font-size:26px; font-weight:700; letter-spacing:-0.6px; margin-bottom:6px; }
+.sub { color:var(--muted); font-size:14px; line-height:1.5; margin-bottom:32px; }
+
+.field { margin-bottom:16px; }
+label { display:block; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+input {
+  width:100%;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  padding:15px 18px;
+  font-size:17px;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  color:var(--text);
+  outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance:none;
+}
+input:focus { border-color:var(--accent); box-shadow:0 0 0 4px rgba(108,99,255,0.12); }
+input::placeholder { color:var(--muted); font-weight:400; font-size:15px; }
+input:disabled { opacity:0.5; }
+
+.btn {
+  width:100%;
+  padding:16px;
+  border:none; border-radius:14px;
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:700;
+  cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  margin-top:10px;
+  -webkit-appearance:none;
+}
+.btn-primary {
+  background:linear-gradient(135deg,var(--accent) 0%,#8b5cf6 100%);
+  color:white;
+  box-shadow:0 4px 20px rgba(108,99,255,0.3);
+}
+.btn-primary:active:not(:disabled) { transform:scale(0.98); }
+.btn-primary:hover:not(:disabled) { box-shadow:0 8px 30px rgba(108,99,255,0.45); }
+.btn-bio {
+  background:rgba(255,255,255,0.04);
+  border:1.5px solid var(--border);
+  color:var(--text);
+}
+.btn-bio:hover:not(:disabled) { border-color:var(--accent); background:rgba(108,99,255,0.08); }
+.btn-bio:active:not(:disabled) { transform:scale(0.98); }
+.btn:disabled { opacity:0.45; cursor:not-allowed; }
+
+.divider { display:flex; align-items:center; gap:12px; margin:20px 0; }
+.divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.divider span { font-size:11px; color:var(--muted); letter-spacing:0.5px; }
+
+.user-greeting {
+  display:none;
+  background:rgba(108,99,255,0.08);
+  border:1px solid rgba(108,99,255,0.2);
+  border-radius:12px;
+  padding:12px 16px;
+  font-size:14px;
+  margin-bottom:16px;
+  animation:fadeIn 0.3s ease;
+}
+.user-greeting.show { display:block; }
+.user-greeting strong { color:var(--accent); font-family:'Syne',sans-serif; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(-6px);} to{opacity:1;transform:none;} }
+
+.spinner {
+  display:none; width:20px; height:20px;
+  border:2px solid rgba(255,255,255,0.2);
+  border-top-color:white;
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg);} }
+.spinner.show { display:block; }
+
+.status {
+  display:none;
+  padding:12px 16px;
+  border-radius:12px;
+  font-size:13px; font-weight:500;
+  margin-top:14px;
+  line-height:1.5;
+}
+.status.show { display:block; }
+.status.error { background:rgba(255,77,109,0.1); border:1px solid rgba(255,77,109,0.25); color:var(--error); }
+.status.success { background:rgba(0,212,138,0.08); border:1px solid rgba(0,212,138,0.2); color:var(--success); }
+.status.info { background:rgba(108,99,255,0.08); border:1px solid rgba(108,99,255,0.2); color:#a78bfa; }
+
+.footer-link { text-align:center; margin-top:24px; font-size:13px; color:var(--muted); }
+.footer-link a { color:var(--accent); text-decoration:none; font-weight:600; }
+.footer-link a:hover { text-decoration:underline; }
+
+#bioSection { display:none; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="orb orb-a"></div>
+<div class="orb orb-b"></div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="brand">
+      <div class="brand-icon">🔐</div>
+      <span class="brand-name">SecureAccess</span>
+    </div>
+
+    <h1>Welcome back</h1>
+    <p class="sub">Enter your User ID, then verify with your fingerprint or Face ID</p>
+
+    <div class="field">
+      <label>User ID</label>
+      <input type="text" id="userId" placeholder="e.g. 10069" inputmode="numeric" autocomplete="off">
+    </div>
+
+    <div class="user-greeting" id="greeting">
+      Hey, <strong id="greetName"></strong> 👋 — scan your biometric to continue
+    </div>
+
+    <button class="btn btn-primary" id="checkBtn" onclick="checkUser()">
+      <span id="checkBtnText">Continue →</span>
+      <div class="spinner" id="checkSpinner"></div>
+    </button>
+
+    <div id="bioSection">
+      <div class="divider"><span>BIOMETRIC VERIFICATION</span></div>
+      <button class="btn btn-bio" id="bioBtn" onclick="loginBio()">
+        <span id="bioIcon">👆</span>
+        <span id="bioBtnText">Login with Fingerprint / Face ID</span>
+        <div class="spinner" id="bioSpinner"></div>
+      </button>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="footer-link">
+      New user? <a href="register.html">Register your biometrics →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ⚠️ REPLACE THIS WITH YOUR APPS SCRIPT WEB APP URL
+const BACKEND_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+
+let uid = null, uname = null;
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status show ' + type;
+}
+function hideStatus() {
+  document.getElementById('status').className = 'status';
+}
+
+async function checkUser() {
+  const val = document.getElementById('userId').value.trim();
+  if (!val) { showStatus('Please enter your User ID', 'error'); return; }
+  if (!BACKEND_URL || BACKEND_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    showStatus('⚠️ BACKEND_URL not set — open login.html and paste your Apps Script URL', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('checkBtn');
+  btn.disabled = true;
+  document.getElementById('checkBtnText').textContent = 'Checking...';
+  document.getElementById('checkSpinner').classList.add('show');
+  hideStatus();
+
+  try {
+    const res = await fetch(`${BACKEND_URL}?action=checkUser&userId=${encodeURIComponent(val)}`);
+    const data = await res.json();
+    btn.disabled = false;
+    document.getElementById('checkBtnText').textContent = 'Continue →';
+    document.getElementById('checkSpinner').classList.remove('show');
+
+    if (data.exists) {
+      uid = val; uname = data.name;
+      document.getElementById('greetName').textContent = data.name;
+      document.getElementById('greeting').classList.add('show');
+      document.getElementById('bioSection').style.display = 'block';
+      document.getElementById('checkBtn').style.display = 'none';
+      document.getElementById('userId').disabled = true;
+      showStatus('User found! Now verify with your biometric below ↓', 'info');
+    } else {
+      showStatus('User ID not found. Please register first.', 'error');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    document.getElementById('checkBtnText').textContent = 'Continue →';
+    document.getElementById('checkSpinner').classList.remove('show');
+    showStatus('Connection error: ' + e.message, 'error');
+  }
+}
+
+async function loginBio() {
+  if (!uid) return;
+  const btn = document.getElementById('bioBtn');
+  btn.disabled = true;
+  document.getElementById('bioBtnText').textContent = 'Waiting for biometric...';
+  document.getElementById('bioSpinner').classList.add('show');
+  document.getElementById('bioIcon').textContent = '⏳';
+  hideStatus();
+
+  try {
+    const res = await fetch(`${BACKEND_URL}?action=getCredential&userId=${encodeURIComponent(uid)}`);
+    const data = await res.json();
+
+    if (!data.found) {
+      showStatus(data.reason === 'no_biometric'
+        ? 'No biometric registered on this account. Please register first.'
+        : 'User not found.', 'error');
+      resetBioBtn(); return;
+    }
+
+    const credId = base64ToUint8Array(data.credentialId);
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+
+    const assertion = await navigator.credentials.get({
+      publicKey: {
+        challenge,
+        allowCredentials: [{ id: credId, type: 'public-key', transports: ['internal','hybrid'] }],
+        userVerification: 'required',
+        timeout: 60000
+      }
+    });
+
+    if (assertion) {
+      await fetch(`${BACKEND_URL}?action=logLogin&userId=${encodeURIComponent(uid)}&userName=${encodeURIComponent(uname)}`);
+      showStatus('✅ Identity verified! Redirecting...', 'success');
+      setTimeout(() => {
+        window.location.href = `dashboard.html?user=${encodeURIComponent(uname)}&id=${encodeURIComponent(uid)}`;
+      }, 1000);
+    }
+  } catch(err) {
+    if (err.name === 'NotAllowedError') {
+      showStatus('Biometric cancelled or timed out. Tap to try again.', 'error');
+    } else if (err.name === 'InvalidStateError') {
+      showStatus('Credential not found on this device. Did you register on a different device?', 'error');
+    } else if (err.name === 'SecurityError') {
+      showStatus('Security error — make sure you\'re on HTTPS (GitHub Pages).', 'error');
+    } else {
+      showStatus(`[${err.name}] ${err.message}`, 'error');
+    }
+    resetBioBtn();
+  }
+}
+
+function resetBioBtn() {
+  document.getElementById('bioBtn').disabled = false;
+  document.getElementById('bioBtnText').textContent = 'Login with Fingerprint / Face ID';
+  document.getElementById('bioSpinner').classList.remove('show');
+  document.getElementById('bioIcon').textContent = '👆';
+}
+
+function base64ToUint8Array(b64) {
+  const bin = atob(b64.replace(/-/g,'+').replace(/_/g,'/'));
+  return new Uint8Array([...bin].map(c => c.charCodeAt(0)));
+}
+
+document.getElementById('userId').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkUser();
+});
+
+if (!window.PublicKeyCredential) {
+  showStatus('⚠️ Biometric auth not supported in this browser. Use Chrome on Android or Safari on iPhone.', 'error');
+}
+</script>
+</body>
+</html>

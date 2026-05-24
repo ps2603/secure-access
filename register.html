@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureAccess — Register</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07070f;
+  --surface: #0e0e1c;
+  --border: #1c1c35;
+  --accent: #00d48a;
+  --accent2: #6c63ff;
+  --text: #e8e8f0;
+  --muted: #5a5a7a;
+  --success: #00d48a;
+  --error: #ff4d6d;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; }
+body {
+  min-height:100vh;
+  background:var(--bg);
+  font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; position:relative;
+}
+.bg-grid {
+  position:fixed; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,212,138,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,138,0.04) 1px, transparent 1px);
+  background-size:44px 44px;
+  animation:gridDrift 25s linear infinite;
+}
+@keyframes gridDrift { to { transform:translateY(44px); } }
+.orb { position:fixed; border-radius:50%; filter:blur(90px); pointer-events:none; }
+.orb-a { width:360px; height:360px; background:radial-gradient(circle,rgba(0,212,138,0.14),transparent 70%); top:-120px; right:-120px; animation:orbFloat 9s ease-in-out infinite; }
+.orb-b { width:300px; height:300px; background:radial-gradient(circle,rgba(108,99,255,0.12),transparent 70%); bottom:-100px; left:-100px; animation:orbFloat 11s ease-in-out infinite reverse; }
+@keyframes orbFloat { 0%,100%{transform:translate(0,0);} 50%{transform:translate(16px,16px);} }
+
+.wrap {
+  position:relative; z-index:10;
+  width:100%; max-width:400px; padding:16px;
+  animation:wrapIn 0.7s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes wrapIn { from{opacity:0;transform:translateY(32px) scale(0.96);} to{opacity:1;transform:none;} }
+
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:44px 36px;
+  box-shadow:0 0 80px rgba(0,212,138,0.05), 0 32px 64px rgba(0,0,0,0.6);
+}
+
+.brand { display:flex; align-items:center; gap:12px; margin-bottom:36px; }
+.brand-icon {
+  width:44px; height:44px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+  box-shadow:0 4px 20px rgba(0,212,138,0.3);
+}
+.brand-name { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; }
+
+.steps { display:flex; gap:6px; margin-bottom:32px; }
+.step { flex:1; height:4px; border-radius:2px; background:var(--border); transition:background 0.4s; }
+.step.active { background:var(--accent); }
+.step.done { background:rgba(0,212,138,0.35); }
+
+h1 { font-family:'Syne',sans-serif; font-size:26px; font-weight:700; letter-spacing:-0.6px; margin-bottom:6px; }
+.sub { color:var(--muted); font-size:14px; line-height:1.5; margin-bottom:30px; }
+
+.field { margin-bottom:16px; }
+label { display:block; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+input {
+  width:100%; background:var(--bg); border:1.5px solid var(--border);
+  border-radius:14px; padding:15px 18px;
+  font-size:17px; font-family:'Syne',sans-serif; font-weight:700;
+  color:var(--text); outline:none; transition:border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance:none;
+}
+input:focus { border-color:var(--accent); box-shadow:0 0 0 4px rgba(0,212,138,0.1); }
+input::placeholder { color:var(--muted); font-weight:400; font-size:15px; }
+
+.btn {
+  width:100%; padding:16px; border:none; border-radius:14px;
+  font-family:'Syne',sans-serif; font-size:15px; font-weight:700;
+  cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  margin-top:10px; -webkit-appearance:none;
+}
+.btn-primary { background:linear-gradient(135deg,var(--accent) 0%,#00a86b 100%); color:#07070f; box-shadow:0 4px 20px rgba(0,212,138,0.25); }
+.btn-primary:hover:not(:disabled) { box-shadow:0 8px 30px rgba(0,212,138,0.4); }
+.btn-primary:active:not(:disabled) { transform:scale(0.98); }
+.btn:disabled { opacity:0.45; cursor:not-allowed; }
+
+.bio-box {
+  border:2px dashed var(--border);
+  border-radius:18px; padding:32px 24px;
+  text-align:center; margin:20px 0;
+  cursor:pointer; transition:all 0.3s;
+}
+.bio-box:hover, .bio-box.active { border-color:var(--accent); background:rgba(0,212,138,0.04); }
+.bio-box.scanning { border-color:var(--accent); animation:pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(0,212,138,0.2);} 50%{box-shadow:0 0 0 10px transparent;} }
+.bio-emoji { font-size:52px; display:block; margin-bottom:14px; transition:all 0.3s; }
+.bio-title { font-family:'Syne',sans-serif; font-weight:700; font-size:16px; margin-bottom:6px; }
+.bio-desc { font-size:13px; color:var(--muted); line-height:1.5; }
+
+.spinner { display:none; width:20px; height:20px; border:2px solid rgba(0,0,0,0.2); border-top-color:#07070f; border-radius:50%; animation:spin 0.7s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg);} }
+.spinner.show { display:block; }
+
+.status { display:none; padding:12px 16px; border-radius:12px; font-size:13px; font-weight:500; margin-top:14px; line-height:1.5; }
+.status.show { display:block; }
+.status.error { background:rgba(255,77,109,0.1); border:1px solid rgba(255,77,109,0.25); color:var(--error); }
+.status.success { background:rgba(0,212,138,0.08); border:1px solid rgba(0,212,138,0.2); color:var(--success); }
+.status.info { background:rgba(108,99,255,0.08); border:1px solid rgba(108,99,255,0.2); color:#a78bfa; }
+
+.success-card { text-align:center; padding:20px 0; }
+.success-icon { font-size:72px; display:block; margin-bottom:20px; animation:bounceIn 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+@keyframes bounceIn { from{opacity:0;transform:scale(0.5);} to{opacity:1;transform:scale(1);} }
+
+.footer-link { text-align:center; margin-top:24px; font-size:13px; color:var(--muted); }
+.footer-link a { color:var(--accent2); text-decoration:none; font-weight:600; }
+.footer-link a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="orb orb-a"></div>
+<div class="orb orb-b"></div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="brand">
+      <div class="brand-icon">✨</div>
+      <span class="brand-name">SecureAccess</span>
+    </div>
+
+    <div class="steps">
+      <div class="step active" id="s1"></div>
+      <div class="step" id="s2"></div>
+      <div class="step" id="s3"></div>
+    </div>
+
+    <!-- Phase 1: Details -->
+    <div id="phase1">
+      <h1>Create account</h1>
+      <p class="sub">Register once — login with your fingerprint or Face ID forever</p>
+      <div class="field">
+        <label>User ID</label>
+        <input type="text" id="userId" placeholder="e.g. 10069" inputmode="numeric" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="userName" placeholder="Enter your full name" autocomplete="name">
+      </div>
+      <button class="btn btn-primary" onclick="toPhase2()">
+        Continue to Biometric Setup →
+      </button>
+    </div>
+
+    <!-- Phase 2: Scan -->
+    <div id="phase2" style="display:none;">
+      <h1>Scan biometric</h1>
+      <p class="sub">Your fingerprint or Face ID will be linked to your account</p>
+      <div class="bio-box" id="bioBox" onclick="doRegister()">
+        <span class="bio-emoji" id="bioEmoji">👆</span>
+        <div class="bio-title" id="bioTitle">Tap to register</div>
+        <div class="bio-desc" id="bioDesc">Uses the biometric already set up on your phone</div>
+      </div>
+      <button class="btn btn-primary" id="regBtn" onclick="doRegister()">
+        <span id="regBtnText">🔐 Register Fingerprint / Face ID</span>
+        <div class="spinner" id="regSpinner"></div>
+      </button>
+    </div>
+
+    <!-- Phase 3: Done -->
+    <div id="phase3" style="display:none;">
+      <div class="success-card">
+        <span class="success-icon">🎉</span>
+        <h1>All set!</h1>
+        <p class="sub" style="margin-bottom:24px;">Your biometric is registered. You can now log in on this device anytime.</p>
+        <a href="login.html" class="btn btn-primary" style="text-decoration:none;">
+          Go to Login →
+        </a>
+      </div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="footer-link" id="footerLink">
+      Already registered? <a href="login.html">Login here →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ⚠️ REPLACE THIS WITH YOUR APPS SCRIPT WEB APP URL
+const BACKEND_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+
+let uid = '', uname = '';
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg; el.className = 'status show ' + type;
+}
+function setStep(n) {
+  for (let i=1;i<=3;i++) {
+    document.getElementById('s'+i).className = 'step' + (i<n?' done':i===n?' active':'');
+  }
+}
+
+function toPhase2() {
+  if (!BACKEND_URL || BACKEND_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    showStatus('⚠️ BACKEND_URL not set — open register.html and paste your Apps Script URL', 'error'); return;
+  }
+  uid = document.getElementById('userId').value.trim();
+  uname = document.getElementById('userName').value.trim();
+  if (!uid || !uname) { showStatus('Please fill in all fields', 'error'); return; }
+  if (!window.PublicKeyCredential) {
+    showStatus('Biometric auth not supported. Use Chrome on Android or Safari on iPhone.', 'error'); return;
+  }
+  document.getElementById('phase1').style.display = 'none';
+  document.getElementById('phase2').style.display = 'block';
+  setStep(2);
+  showStatus('Tap the button below to register your biometric', 'info');
+}
+
+async function doRegister() {
+  const btn = document.getElementById('regBtn');
+  const box = document.getElementById('bioBox');
+  btn.disabled = true;
+  box.classList.add('scanning');
+  document.getElementById('regBtnText').textContent = 'Waiting for biometric...';
+  document.getElementById('regSpinner').classList.add('show');
+  document.getElementById('bioEmoji').textContent = '⏳';
+  document.getElementById('bioTitle').textContent = 'Scanning...';
+  document.getElementById('bioDesc').textContent = 'Use your fingerprint or Face ID now';
+  document.getElementById('status').className = 'status';
+
+  try {
+    const challenge = crypto.getRandomValues(new Uint8Array(32));
+    const credential = await navigator.credentials.create({
+      publicKey: {
+        challenge,
+        rp: { name: "SecureAccess", id: location.hostname },
+        user: {
+          id: new TextEncoder().encode(uid),
+          name: uid,
+          displayName: uname
+        },
+        pubKeyCredParams: [
+          { alg: -7, type: 'public-key' },
+          { alg: -257, type: 'public-key' }
+        ],
+        authenticatorSelection: {
+          authenticatorAttachment: 'platform',
+          userVerification: 'required',
+          requireResidentKey: false
+        },
+        timeout: 60000,
+        attestation: 'none'
+      }
+    });
+
+    const credId = arrayBufferToBase64(credential.rawId);
+    const pubKey = credential.response.getPublicKey
+      ? arrayBufferToBase64(credential.response.getPublicKey()) : '';
+
+    box.classList.remove('scanning');
+    document.getElementById('bioEmoji').textContent = '✅';
+    document.getElementById('bioTitle').textContent = 'Captured!';
+    document.getElementById('bioDesc').textContent = 'Saving to your account...';
+    showStatus('Biometric captured! Saving...', 'info');
+
+    const res = await fetch(`${BACKEND_URL}?action=register&userId=${encodeURIComponent(uid)}&userName=${encodeURIComponent(uname)}&credentialId=${encodeURIComponent(credId)}&publicKey=${encodeURIComponent(pubKey)}`);
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('phase2').style.display = 'none';
+      document.getElementById('phase3').style.display = 'block';
+      document.getElementById('status').className = 'status';
+      document.getElementById('footerLink').style.display = 'none';
+      setStep(3);
+    } else {
+      showStatus('Save failed: ' + (data.error || 'Unknown error'), 'error');
+      resetBioUI();
+    }
+  } catch(err) {
+    box.classList.remove('scanning');
+    if (err.name === 'NotAllowedError') {
+      showStatus('Scan cancelled. Tap the button to try again.', 'error');
+    } else if (err.name === 'SecurityError') {
+      showStatus('[SecurityError] ' + err.message, 'error');
+    } else {
+      showStatus(`[${err.name}] ${err.message}`, 'error');
+    }
+    resetBioUI();
+  }
+}
+
+function resetBioUI() {
+  document.getElementById('regBtn').disabled = false;
+  document.getElementById('bioBox').classList.remove('scanning');
+  document.getElementById('regBtnText').textContent = '🔐 Register Fingerprint / Face ID';
+  document.getElementById('regSpinner').classList.remove('show');
+  document.getElementById('bioEmoji').textContent = '👆';
+  document.getElementById('bioTitle').textContent = 'Tap to register';
+  document.getElementById('bioDesc').textContent = 'Uses the biometric already set up on your phone';
+}
+
+function arrayBufferToBase64(buf) {
+  if (!buf || buf.byteLength === 0) return '';
+  const bytes = new Uint8Array(buf);
+  let b = '';
+  for (let i=0;i<bytes.byteLength;i++) b += String.fromCharCode(bytes[i]);
+  return btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+}
+</script>
+</body>
+</html>
