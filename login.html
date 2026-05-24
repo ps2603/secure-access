@@ -235,7 +235,7 @@ function hideStatus() {
 async function checkUser() {
   const val = document.getElementById('userId').value.trim();
   if (!val) { showStatus('Please enter your User ID', 'error'); return; }
-  if (!BACKEND_URL || BACKEND_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+  if (!BACKEND_URL || BACKEND_URL === 'https://ps2603.github.io/secure-access/') {
     showStatus('⚠️ BACKEND_URL not set — open login.html and paste your Apps Script URL', 'error');
     return;
   }
