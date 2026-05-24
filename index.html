@@ -177,7 +177,7 @@ async function loginBio() {
       await fetch(`${BACKEND_URL}?action=logLogin&userId=${encodeURIComponent(uid)}&userName=${encodeURIComponent(uname)}`);
       showStatus('✅ Identity verified! Redirecting...', 'success');
       setTimeout(() => {
-        window.location.href = `/secure-access/dashboard.html?user=${encodeURIComponent(uname)}&id=${encodeURIComponent(uid)}`;
+        window.location.href = `https://ps2603.github.io/secure-access/dashboard.html?user=${encodeURIComponent(uname)}&id=${encodeURIComponent(uid)}`;
       }, 1000);
     }
   } catch(err) {
