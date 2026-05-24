@@ -219,7 +219,7 @@ input:disabled { opacity:0.5; }
 
 <script>
 // ⚠️ REPLACE THIS WITH YOUR APPS SCRIPT WEB APP URL
-const BACKEND_URL = "https://ps2603.github.io/secure-access/";
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxBxXVNsElY94Ggf2bRFswVUQZbMIg_juM2vzda2tYtd9cbG2UbfWNLbd23MJr1U1KC7A/exec";
 
 let uid = null, uname = null;
 
@@ -235,7 +235,7 @@ function hideStatus() {
 async function checkUser() {
   const val = document.getElementById('userId').value.trim();
   if (!val) { showStatus('Please enter your User ID', 'error'); return; }
-  if (!BACKEND_URL || BACKEND_URL === 'https://ps2603.github.io/secure-access/') {
+  if (!BACKEND_URL || BACKEND_URL === 'https://script.google.com/macros/s/AKfycbxBxXVNsElY94Ggf2bRFswVUQZbMIg_juM2vzda2tYtd9cbG2UbfWNLbd23MJr1U1KC7A/exec') {
     showStatus('⚠️ BACKEND_URL not set — open login.html and paste your Apps Script URL', 'error');
     return;
   }
